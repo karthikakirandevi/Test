@@ -3,42 +3,67 @@
 <html>
 <head>
     <title>Chatbox Web Template</title>
+    <style>
+        #chatbox {
+            width: 500px;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        #userInput {
+            width: 400px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        #sendBtn {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Chatbox Web Template</h1>
-    <form action="">
-        <input type="text" name="user_input" id="user_input" placeholder="Type your message here..." />
-        <input type="submit" value="Send" />
-    </form>
 
     <div id="chatbox">
-        <!-- Chatbox content will be loaded here -->
+
     </div>
 
+    <form action="" method="post">
+        <input type="text" name="userInput" id="userInput" placeholder="Type your message here..." />
+        <input type="submit" name="sendBtn" id="sendBtn" value="Send" />
+    </form>
+
     <script type="text/javascript">
-        // Get user input from the form
-        const userInput = document.getElementById('user_input').value;
 
-        // Make a request to StarkAI.live with the user input
-        const request = new XMLHttpRequest();
-        request.open('GET', `/sydeny/chat/message/${userInput}`, true);
+        // Get the user input from the form and send it to the StarkAI.live API. 
+        // The response will be displayed in the chatbox. 
 
-        request.onload = function() {
-            if (this.status >= 200 && this.status < 400) {
-                // Success! Get the response from StarkAI.live and show it in the chatbox
-                const response = JSON.parse(this.response);
-                document.getElementById('chatbox').innerHTML = response;
-            } else {
-                // We reached our target server, but it returned an error
-            }
-        };
+        const form = document.querySelector('form'); 
 
-        request.onerror = function() {
-            // There was a connection error of some sort
-        };
+        form.addEventListener('submit', (e) => { 
 
-        request.send();
+            e.preventDefault(); 
+
+            const userInput = document.querySelector('#userInput').value; 
+
+            fetch('https://starkai.live/sydeny/chat/message/' + userInput) 
+                .then(response => response.json()) 
+                .then(data => { 
+
+                    const chatbox = document.querySelector('#chatbox'); 
+
+                    chatbox.innerHTML += '<p><strong>You:</strong> ' + userInput + '</p>'; 
+                    chatbox.innerHTML += '<p><strong>StarkAI Bot:</strong> ' + data.response + '</p>'; 
+
+                }); 
+
+        }); 
+
     </script>
 </body>
 </html>
-
