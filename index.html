@@ -1,63 +1,66 @@
 <!DOCTYPE html>
 
+
 <html>
 <head>
-    <title>Chatbot</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Chatbox</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Chatbot</h1>
     <div id="chatbox">
         <div id="chatlogs">
-            <div class="chat self">
-                <div class="user-photo"><img src="https://i.imgur.com/HYcn9xO.png" /></div>
-                <p class="chat-message">Hello, I'm Sydney! How can I help you?</p>
-            </div>
+            <div id="chatlogs-container"></div>
         </div>
-
-        <form id="chatform" action="" method="get">
-            <input type="text" name="message" placeholder="Type your message..." />
-            <input type="submit" value="Send" />
-        </form>
-
+        <div id="chat-input">
+            <input type="text" id="usermsg" placeholder="Type your message here..." />
+            <button id="submitmsg">Send</button>
+        </div>
     </div>
 
     <script type="text/javascript">
-
         $(document).ready(function(){
 
-            $("#chatform").on("submit", function(e){
+            // Get the chat logs from the server using AJAX
+            $.ajax({
+                url: 'starkai.live/sydney/chat/message',
+                type: 'GET',
+                success: function(data) {
 
-                e.preventDefault();
+                    // Append the chat logs to the chatlogs-container div
+                    $('#chatlogs-container').append(data);
 
-                var message = $("input[name='message']").val();
+                    // Scroll to the bottom of the chatlogs-container div
+                    $('#chatlogs-container').scrollTop($('#chatlogs-container')[0].scrollHeight);
 
-                $("#chatlogs").append(`<div class="chat self">
-                    <div class="user-photo"><img src="https://i.imgur.com/HYcn9xO.png" /></div>
-                    <p class="chat-message">${message}</p>
-                </div>`);
+                }
+            });
 
-                $("input[name='message']").val("");
+            // When the user clicks on the submitmsg button, send the message to the server using AJAX
+            $('#submitmsg').click(function(){
 
+                // Get the message from the user input field
+                var usermsg = $('#usermsg').val();
+
+                // Send the message to the server using AJAX POST request
                 $.ajax({
-                    url: "https://starkai.live/sydney/chat/message/" + message, 
-                    type: "GET", 
-                    success: function(response){ 
+                    url: 'starkai.live/sydney/chat/message',
+                    type: 'POST',
+                    data: {message: usermsg},
+                    success: function(data) {
 
-                        setTimeout(function(){ 
+                        // Append the response from the server to the chatlogs-container div
+                        $('#chatlogs-container').append(data);
 
-                            $("#chatlogs").append(`<div class="chat friend"> 
-                                <div class="user-photo"><img src="https://i.imgur.com/DY6gND0.png" /></div> 
-                                <p class="chat-message">${response}</p> 
-                            </div>`); 
+                        // Scroll to the bottom of the chatlogs-container div
+                        $('#chatlogs-container').scrollTop($('#chatlogs-container')[0].scrollHeight);
 
-                        }, 500); 
+                        // Clear the user input field after sending the message to the server 
+                        $('#usermsg').val('');
 
-                    } 
+                    }
+                });
 
-                }); 
-
-            }); 
+            });
 
         }); 
 
