@@ -1,29 +1,44 @@
 <!DOCTYPE html>
+
 <html>
-  <head>
+<head>
     <title>Chatbox Web Template</title>
-  </head>
-  <body>
+</head>
+<body>
     <h1>Chatbox Web Template</h1>
     <form action="">
-      <input type="text" name="user_input" id="user_input" />
-      <input type="submit" value="Send" />
+        <input type="text" name="user_input" id="user_input" placeholder="Type your message here..." />
+        <input type="submit" value="Send" />
     </form>
-  </body>
+
+    <div id="chatbox">
+        <!-- Chatbox content will be loaded here -->
+    </div>
+
+    <script type="text/javascript">
+        // Get user input from the form
+        const userInput = document.getElementById('user_input').value;
+
+        // Make a request to StarkAI.live with the user input
+        const request = new XMLHttpRequest();
+        request.open('GET', `/sydeny/chat/message/${userInput}`, true);
+
+        request.onload = function() {
+            if (this.status >= 200 && this.status < 400) {
+                // Success! Get the response from StarkAI.live and show it in the chatbox
+                const response = JSON.parse(this.response);
+                document.getElementById('chatbox').innerHTML = response;
+            } else {
+                // We reached our target server, but it returned an error
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+        };
+
+        request.send();
+    </script>
+</body>
 </html>
-
-
-<py-script src=”/my_own_file.py”>
-import requests
-
-# Get the user input from the form
-user_input = request.form.get('user_input')
-
-# Send the request to StarkAI.live with GET type
-response = requests.get('https://starkai.live/api/v1/chatbot', params={'query': user_input})
-
-# Get the response from StarkAI.live and display it on the page
-print(response.json()['response'])
-
-</py-script>
 
