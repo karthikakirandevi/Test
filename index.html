@@ -1,53 +1,44 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Starkai Chatbot</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<title>Chatbot</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Starkai Chatbot</h1>
-    <div id="chatbox">
-        <div id="chatlogs">
-            <div class="chat self">
-                <div class="user-photo"><img src="https://image.flaticon.com/icons/svg/145/145867.svg" /></div>
-                <p class="chat-message">Hello, I'm Starkai! How can I help you?</p>
-            </div>
+<h1>Chatbot</h1>
+<div id="chatbox">
+    <div id="chatlogs">
+        <div class="chat self">
+            <div class="user-photo"><img src="https://image.flaticon.com/icons/svg/145/145867.svg" /></div>
+            <p class="chat-message">Hello, I'm Chatbot! How can I help you?</p>
         </div>
-
-        <form name="message" action="">
-            <input name="usermsg" type="text" id="usermsg" placeholder="Type your message here..." />
-            <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
-        </form>
     </div>
+    <form name="message" action="">
+        <input name="usermsg" type="text" id="usermsg" placeholder="Type your message..." />
+        <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
+    </form>
+</div>
+<script type="text/javascript">
+// jQuery Document
+$(document).ready(function(){
 
-    <script type="text/javascript">
+    //If user submits the form
+    $("#submitmsg").click(function(){   
+        var clientmsg = $("#usermsg").val();
 
-        // jQuery Document
-        $(document).ready(function(){
+        $.ajax({url: "starkai.live/sydney/chat/message/"+clientmsg, success: function(result){
 
-            //If user submits the form
-            $("#submitmsg").click(function(){   
+            var response = JSON.parse(result);
 
-                var clientmsg = $("#usermsg").val();
+            $("#chatlogs").append('<div class="chat friend"><div class="user-photo"><img src="https://image.flaticon.com/icons/svg/145/145867.svg" /></div><p class="chat-message">'+response+'</p></div>');
 
-                //Send the message to the server using ajax call 
-                $.ajax({url: "starkai.live/sydney/chat/message/" + clientmsg, success: function(result){
+            $("#usermsg").val(''); //reset text box
 
-                    //Get the response from server and show it in chatbox 
-                    var response = JSON.parse(result);
+        }});
 
-                    $("#chatlogs").append("<div class='chat friend'><div class='user-photo'><img src='https://image.flaticon.com/icons/svg/145/145867.svg' /></div><p class='chat-message'>" + response.message + "</p></div>");
+        return false;
 
-                    $("#usermsg").val(""); //reset text box 
-
-                }});
-
-                return false;
-
-            });
-
-        });
-
-    </script>
+    }); 
+}); 
+</script>
 </body>
 </html>
