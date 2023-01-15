@@ -1,55 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Chatbot Web Template</title>
-    <style>
-        body {
-            font-family: Arial;
-        }
+  <head>
+    <title>Chatbox Web Template</title>
+  </head>
+  <body>
+    <h1>Chatbox Web Template</h1>
+    <form action="">
+      <input type="text" name="user_input" id="user_input" />
+      <input type="submit" value="Send" />
+    </form>
+  </body>
 
-        .chatbot-container {
-            width: 500px;
-            margin: 0 auto;
-            background-color: #f2f2f2;
-            padding: 10px;
-        }
+<py-script>
+import requests
 
-        .chatbot-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-        }
+# Get the user input from the form
+user_input = request.form.get('user_input')
 
-        .chatbot-response {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f2f2f2;
-        }
-    </style>
-</head>
-<body>
-    <div class="chatbot-container">
-        <h1>Chatbot Web Template</h1>
+# Send the request to StarkAI.live with GET type
+response = requests.get('https://starkai.live/api/v1/chatbot', params={'query': user_input})
 
-        <form action="" method="post">
-            <input type="text" name="user_input" class="chatbot-input" placeholder="Type your message here..." />
-            <input type="submit" value="Send" />
-        </form>
+# Get the response from StarkAI.live and display it on the page
+print(response.json()['response'])
 
-        <?php 
-            if (isset($_POST['user_input'])) { 
-                $user_input = $_POST['user_input']; 
-
-                // Get response from StarkAI.live 
-                $response = file_get_contents('https://starkai.live/sydeny/chat/message/' . $user_input); 
-
-                // Display response 
-                echo '<div class="chatbot-response">' . $response . '</div>'; 
-            } 
-        ?>
-
-    </div>
-</body>
+</py-script>
 </html>
+
