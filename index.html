@@ -2,77 +2,52 @@
 <html>
 <head>
     <title>Starkai Chatbot</title>
-    <style>
-        #chatbox {
-            width: 500px;
-            height: 300px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px auto;
-            overflow-y: scroll;
-        }
-
-        #input {
-            width: 400px;
-            margin-left: 10px;
-        }
-
-        #submit {
-            width: 100px;
-        }
-
-    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-
     <h1>Starkai Chatbot</h1>
-
     <div id="chatbox">
+        <div id="chatlogs">
+            <div class="chat self">
+                <div class="user-photo"><img src="https://image.flaticon.com/icons/svg/145/145867.svg" /></div>
+                <p class="chat-message">Hello, I'm Starkai! How can I help you?</p>
+            </div>
+        </div>
 
+        <form name="message" action="">
+            <input name="usermsg" type="text" id="usermsg" placeholder="Type your message here..." />
+            <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
+        </form>
     </div>
-
-    <form action="starkai.live/sydeny/chat/message/" method="get">
-        <input type="text" name="message" id="input" />
-        <input type="submit" value="Send" id="submit" />
-    </form>
 
     <script type="text/javascript">
 
-        // Get the input field and submit button.
-        var input = document.getElementById("input");
-        var submit = document.getElementById("submit");
+        // jQuery Document
+        $(document).ready(function(){
 
-        // When the user clicks the submit button, send the message to Starkai.live.
-        submit.addEventListener("click", function(e) {
+            //If user submits the form
+            $("#submitmsg").click(function(){   
 
-            // Prevent the form from submitting.
-            e.preventDefault();
+                var clientmsg = $("#usermsg").val();
 
-            // Get the message from the input field.
-            var message = input.value;
+                //Send the message to the server using ajax call 
+                $.ajax({url: "starkai.live/sydney/chat/message/" + clientmsg, success: function(result){
 
-            // Send the message to Starkai.live.
-            fetch("starkai.live/sydney/chat/message/" + message)
-                .then(function(response) {
+                    //Get the response from server and show it in chatbox 
+                    var response = JSON.parse(result);
 
-                    // Get the response from Starkai.live and display it in the chatbox.
-                    response.text().then(function(text) {
+                    $("#chatlogs").append("<div class='chat friend'><div class='user-photo'><img src='https://image.flaticon.com/icons/svg/145/145867.svg' /></div><p class='chat-message'>" + response.message + "</p></div>");
 
-                        // Create a new div element to display the response in the chatbox.
-                        var div = document.createElement("div");
+                    $("#usermsg").val(""); //reset text box 
 
-                        // Set the text of the div element to be the response from Starkai.live. 
-                        div.innerText = text;
+                }});
 
-                        // Append the div element to the chatbox. 
-                        document.getElementById("chatbox").appendChild(div);
+                return false;
 
-                    });
-
-                });
+            });
 
         });
 
     </script>
-</body> 
+</body>
 </html>
