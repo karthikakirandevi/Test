@@ -1,122 +1,78 @@
 <!DOCTYPE html>
-
 <html>
 <head>
-    <title>Chatbox</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+    <title>Starkai Chatbot</title>
     <style>
         #chatbox {
             width: 500px;
-            height: 400px;
+            height: 300px;
             border: 1px solid #ccc;
-            margin: 10px auto;
             padding: 10px;
+            margin: 10px auto;
+            overflow-y: scroll;
         }
 
-        #chatbox .message {
-            margin-bottom: 10px;
+        #input {
+            width: 400px;
+            margin-left: 10px;
         }
 
-        #chatbox .message .user {
-            font-weight: bold;
-        }
-
-        #chatbox .message .text {
-            font-style: italic;
-        }
-
-        #chatbox form {
-            margin-top: 10px;
-        }
-
-        #chatbox input[type="text"] {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ccc;
-        }
-
-        #chatbox input[type="submit"] {
-            padding: 5px 10px;
-            background-color: #ccc;
-            border: none;
-            cursor: pointer;
+        #submit {
+            width: 100px;
         }
 
     </style>
 </head>
 <body>
 
+    <h1>Starkai Chatbot</h1>
+
     <div id="chatbox">
 
     </div>
 
-    <form id="chatForm" action="" method="post">
-        <input type="text" name="message" id="message" placeholder="Type your message here..." /> 
-        <input type="submit" value="Send" /> 
+    <form action="starkai.live/sydney/chat/message/" method="get">
+        <input type="text" name="message" id="input" />
+        <input type="submit" value="Send" id="submit" />
     </form>
 
     <script type="text/javascript">
 
-        $(document).ready(function() {
+        // Get the input field and submit button.
+        var input = document.getElementById("input");
+        var submit = document.getElementById("submit");
 
-            // Get the chat history from the database and display it in the chatbox 
-            $.ajax({ 
-                url : 'getChatHistory.php',  // URL to get the chat history from the database 
-                type : 'GET',  // Method used to get the data 
-                success : function(data) {  // Function to be executed if the request succeeds 
+        // When the user clicks the submit button, send the message to Starkai.live.
+        submit.addEventListener("click", function(e) {
 
-                    // Append the chat history to the chatbox 
-                    $('#chatbox').append(data); 
+            // Prevent the form from submitting.
+            e.preventDefault();
 
-                } 
+            // Get the message from the input field.
+            var message = input.value;
 
-            }); 
+            // Send the message to Starkai.live.
+            fetch("starkai.live/sydney/chat/message/" + message)
+                .then(function(response) {
 
-            // Submit the form when the user presses enter or clicks on the send button 
-            $('#chatForm').submit(function(e) { 
+                    // Get the response from Starkai.live and display it in the chatbox.
+                    response.text().then(function(text) {
 
-                e.preventDefault(); // Prevent the form from being submitted 
+                        // Create a new div element to display the response in the chatbox.
+                        var div = document.createElement("div");
 
-                // Get the message from the input field 
-                var message = $('#message').val(); 
+                        // Set the text of the div element to be the response from Starkai.live. 
+                        div.innerText = text;
 
-                // Make an AJAX request to get a response from StarkAI using GET method  
-                $.ajax({ 
+                        // Append the div element to the chatbox. 
+                        document.getElementById("chatbox").appendChild(div);
 
-                    url : 'starkai.live/sydney/chat/message/' + message, // URL to get a response from StarkAI  
-                    type : 'GET', // Method used to get a response from StarkAI  
+                    });
 
-                    success : function(data) { // Function to be executed if the request succeeds  
+                });
 
-                        // Append the response to the chatbox  
-                        $('#chatbox').append('<div class="message"><span class="user">You</span>: <span class="text">' + message + '</span></div><div class="message"><span class="user">StarkAI</span>: <span class="text">' + data + '</span></div>');  
+        });
 
-                        // Clear the input field  
-                        $('#message').val('');  
-
-                        // Save the chat history in the database  
-                        $.ajax({  
-
-                            url : 'saveChatHistory.php', // URL to save the chat history in the database  
-                            type : 'POST', // Method used to save the data in the database  
-                            data : { message : message, response : data }, // Data to be saved in the database  
-
-                            success : function(data) { // Function to be executed if the request succeeds  
-
-                                console.log('Chat history saved successfully!');  
-
-                            }  
-
-                        });  
-
-                    }  
-
-                });  
-
-            });  
-
-        });  
-
-    </script>    																																																		     </body>     </html>
+    </script>
+</body> 
+</html>
