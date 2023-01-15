@@ -2,68 +2,65 @@
 
 <html>
 <head>
-    <title>Chatbox Web Template</title>
-    <style>
-        #chatbox {
-            width: 500px;
-            height: 300px;
-            border: 1px solid #ccc;
-            margin: 0 auto;
-            padding: 10px;
-        }
-
-        #userInput {
-            width: 400px;
-            border: 1px solid #ccc;
-            padding: 5px;
-        }
-
-        #sendBtn {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-        }
-
-    </style>
+    <title>Chatbot</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-
+    <h1>Chatbot</h1>
     <div id="chatbox">
+        <div id="chatlogs">
+            <div class="chat self">
+                <div class="user-photo"><img src="https://i.imgur.com/HYcn9xO.png" /></div>
+                <p class="chat-message">Hello, I'm Sydney! How can I help you?</p>
+            </div>
+        </div>
+
+        <form id="chatform" action="" method="get">
+            <input type="text" name="message" placeholder="Type your message..." />
+            <input type="submit" value="Send" />
+        </form>
 
     </div>
 
-    <form action="" method="post">
-        <input type="text" name="userInput" id="userInput" placeholder="Type your message here..." />
-        <input type="submit" name="sendBtn" id="sendBtn" value="Send" />
-    </form>
-
     <script type="text/javascript">
 
-        // Get the user input from the form and send it to the StarkAI.live API. 
-        // The response will be displayed in the chatbox. 
+        $(document).ready(function(){
 
-        const form = document.querySelector('form'); 
+            $("#chatform").on("submit", function(e){
 
-        form.addEventListener('submit', (e) => { 
+                e.preventDefault();
 
-            e.preventDefault(); 
+                var message = $("input[name='message']").val();
 
-            const userInput = document.querySelector('#userInput').value; 
+                $("#chatlogs").append(`<div class="chat self">
+                    <div class="user-photo"><img src="https://i.imgur.com/HYcn9xO.png" /></div>
+                    <p class="chat-message">${message}</p>
+                </div>`);
 
-            fetch('https://starkai.live/sydeny/chat/message/' + userInput) 
-                .then(response => response.json()) 
-                .then(data => { 
+                $("input[name='message']").val("");
 
-                    const chatbox = document.querySelector('#chatbox'); 
+                $.ajax({
+                    url: "https://starkai.live/sydney/chat/message/" + message, 
+                    type: "GET", 
+                    success: function(response){ 
 
-                    chatbox.innerHTML += '<p><strong>You:</strong> ' + userInput + '</p>'; 
-                    chatbox.innerHTML += '<p><strong>StarkAI Bot:</strong> ' + data.response + '</p>'; 
+                        setTimeout(function(){ 
+
+                            $("#chatlogs").append(`<div class="chat friend"> 
+                                <div class="user-photo"><img src="https://i.imgur.com/DY6gND0.png" /></div> 
+                                <p class="chat-message">${response}</p> 
+                            </div>`); 
+
+                        }, 500); 
+
+                    } 
 
                 }); 
 
+            }); 
+
         }); 
 
-    </script>
-</body>
+    </script> 
+</body> 
 </html>
