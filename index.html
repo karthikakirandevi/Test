@@ -1,44 +1,16 @@
 <html>
-<head>
-<title>Chatbot</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-</head>
-<body>
-<h1>Chatbot</h1>
-<div id="chatbox">
-    <div id="chatlogs">
-        <div class="chat self">
-            <div class="user-photo"><img src="https://image.flaticon.com/icons/svg/145/145867.svg" /></div>
-            <p class="chat-message">Hello, I'm Chatbot! How can I help you?</p>
+    <head>
+        <title>Chatbox</title>
+    </head>
+    <body>
+        <div class="chatbox">
+            <div class="chatlogs">
+                <!-- Chat history will be displayed here -->
+            </div>
+            <div class="chat-form">
+                <textarea id="userInput" placeholder="Type your message here..."></textarea>
+                <button id="sendButton">Send</button>
+            </div>
         </div>
-    </div>
-    <form name="message" action="">
-        <input name="usermsg" type="text" id="usermsg" placeholder="Type your message..." />
-        <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
-    </form>
-</div>
-<script type="text/javascript">
-// jQuery Document
-$(document).ready(function(){
-
-    //If user submits the form
-    $("#submitmsg").click(function(){   
-        var clientmsg = $("#usermsg").val();
-
-        $.ajax({url: "starkai.live/sydney/chat/message/"+clientmsg, success: function(result){
-
-            var response = JSON.parse(result);
-
-            $("#chatlogs").append('<div class="chat friend"><div class="user-photo"><img src="https://image.flaticon.com/icons/svg/145/145867.svg" /></div><p class="chat-message">'+response+'</p></div>');
-
-            $("#usermsg").val(''); //reset text box
-
-        }});
-
-        return false;
-
-    }); 
-}); 
-</script>
-</body>
+    </body>
 </html>
